@@ -1,0 +1,29 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: applytome-db
+    environment:
+      POSTGRES_USER: applytome
+      POSTGRES_PASSWORD: applytome
+      POSTGRES_DB: applytome
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    container_name: applytome-app
+    ports:
+      - "8080:8080"
+    environment:
+      DATABASE_URL: postgresql://applytome:applytome@postgres:5432/applytome?schema=public
+      JWT_SECRET: your-jwt-secret-change-this-in-production
+      NODE_ENV: production
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:

@@ -1,0 +1,79 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String   @id @default(uuid())
+  email       String   @unique
+  password    String
+  name        String
+  nickname    String?
+  photoUrl    String?
+  bio         String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  forms       Form[]
+}
+
+model Form {
+  id              String   @id @default(uuid())
+  slug            String   @unique
+  title           String
+  category        String
+  description     String?
+  creatorId       String
+  creator         User     @relation(fields: [creatorId], references: [id])
+  isActive        Boolean  @default(true)
+  allowsAnonymous Boolean  @default(false)
+  theme           String   @default("default")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  questions       Question[]
+  responses       Response[]
+
+  @@index([slug])
+}
+
+model Question {
+  id          String   @id @default(uuid())
+  formId      String
+  form        Form     @relation(fields: [formId], references: [id], onDelete: Cascade)
+  type        String
+  label       String
+  placeholder String?
+  required    Boolean  @default(false)
+  order       Int      @default(0)
+  options     String?
+  config      String?
+  createdAt   DateTime @default(now())
+  answers     Answer[]
+}
+
+model Response {
+  id                String   @id @default(uuid())
+  formId            String
+  form              Form     @relation(fields: [formId], references: [id], onDelete: Cascade)
+  applicantName     String
+  applicantEmail    String
+  applicantPhotoUrl String?
+  status            String   @default("submitted")
+  score             Int?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  answers           Answer[]
+}
+
+model Answer {
+  id         String   @id @default(uuid())
+  responseId String
+  response   Response @relation(fields: [responseId], references: [id], onDelete: Cascade)
+  questionId String
+  question   Question @relation(fields: [questionId], references: [id])
+  value      String
+  createdAt  DateTime @default(now())
+}

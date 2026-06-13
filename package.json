@@ -1,0 +1,13 @@
+{
+  "name": "applytome",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "cd backend && npm run dev",
+    "build": "cd frontend && npm run build && cd ../backend && npm run build",
+    "start": "cd backend && npx tsx src/index.ts",
+    "db:generate": "cd backend && npx prisma generate",
+    "db:migrate": "cd backend && npx prisma migrate deploy",
+    "db:push": "cd backend && npx prisma db push",
+    "db:studio": "cd backend && npx prisma studio"
+  }
+}
