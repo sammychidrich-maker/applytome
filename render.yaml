@@ -16,16 +16,9 @@ services:
         generateValue: true
     healthCheckPath: /health
 
-  - type: pserv
+  - type: postgres
     name: applytome-db
-    env: docker
     plan: free
-    image: postgres:15-alpine
-    dockerCommand: ""
-    envVars:
-      - key: POSTGRES_USER
-        value: applytome
-      - key: POSTGRES_PASSWORD
-        generateValue: true
-      - key: POSTGRES_DB
-        value: applytome
+    ipAllowList:
+      - source: 0.0.0.0/0
+        description: everywhere
